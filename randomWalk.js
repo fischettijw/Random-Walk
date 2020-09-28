@@ -3,8 +3,10 @@ const sHeight = 400;
 let pointX = sWidth / 2;
 let pointY = sHeight / 2;
 const pointSize = 10;
-const cyclesPerSecond = 1;
+const cyclesPerSecond = 60;
 let cycles = 0;
+let aveSum = 0;
+let average = 0;
 
 function setup() {
     createCanvas(sWidth, sHeight);
@@ -14,16 +16,8 @@ function setup() {
 function draw() {
     background(192);
     drawHorizontalPath(sHeight / 2, 2);
-    stroke(0);
-    fill(0);
-    strokeWeight(pointSize);
-    point(pointX, pointY);
-
-    if (randomBetween(0, 2) == 0) {
-        pointX -= pointSize;
-    } else {
-        pointX += pointSize;
-    }
+    drawPoint(pointX, pointY, pointSize);
+    updatePointXY();
 }
 
 function drawHorizontalPath(y, thickness) {
@@ -37,10 +31,32 @@ function drawHorizontalPath(y, thickness) {
     line(sWidth / 2, y - pointSize, sWidth / 2, y + pointSize);
 
     cycles += 1;
-    textSize(36);
-    text("Cycles:   " + cycles, 50, sHeight - 50);
+    displayStatusLine();
 }
 
 function randomBetween(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
+    return floor(random() * (max - min)) + min;
+}
+
+function displayStatusLine() {
+    textSize(20);
+    text(`Cycles:   ${cycles}      Random Average: ${average}  ( ${pointX},  ${pointY} )`, 10, sHeight - 10);
+}
+
+function updatePointXY() {
+    if (randomBetween(0, 2) == 0) {
+        pointX -= pointSize;
+        aveSum -= 1;
+    } else {
+        pointX += pointSize;
+        aveSum += 1;
+    }
+    average = aveSum / cycles;
+}
+
+function drawPoint(x, y, size) {
+    stroke(0);
+    fill(0);
+    strokeWeight(size);
+    point(x, y);
 }
